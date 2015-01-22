@@ -10,7 +10,7 @@ dim QUERYSTRING
 dim HISTORYFILE
 dim wshShell 
 set wshShell = WScript.CreateObject( "WScript.Shell" )
-QUERYSTRING = "https://example/password" 'name=computername&nouonce=0
+QUERYSTRING = "https://example.com/password" 'name=computername&nouonce=0
 HISTORYFILE = "C:\Support\logs.txt"
 
 '''''''''''''''''''''''''
