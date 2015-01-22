@@ -1,7 +1,7 @@
 #Shared Host Integrated Password System
 Copyright 2015 Shared Host Integrated Password System (SHIPS)
 
-Written by: Geoff Walton
+Written by: Geoff Walton at TrustedSec
 
 Company: [TrustedSec](https://www.trustedsec.com)
 
