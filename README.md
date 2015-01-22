@@ -9,7 +9,7 @@ Please read the design and installation documentation located in the doc/ folder
 
 #What IS SHIPS?
 
-The Shared Host Integrated Password System (SHIPS) is a solution to provide unique and rotated local super user or administrator passwords for environments where it is not possible or not appropriate to disable these local accounts. Clients may be configured to rotate passwords automatically. Stored passwords can be retrieved by desktop support personnel as required, or updated when a password has to be manually changed in the course of system maintenance. By having unique passwords on each machine and logging of password retrievals, security can be improved my making networks more resistant to lateral movement by attackers and enhancing the ability to attribute actions to individual persons.
+The Shared Host Integrated Password System (SHIPS) is a solution to provide unique and rotated local super user or administrator passwords for environments where it is not possible or not appropriate to disable these local accounts. Clients may be configured to rotate passwords automatically. Stored passwords can be retrieved by desktop support personnel as required, or updated when a password has to be manually changed in the course of system maintenance. By having unique passwords on each machine and logging of password retrievals, security can be improved by making networks more resistant to lateral movement by attackers and enhancing the ability to attribute actions to individual persons.
 
 When performing penetration tests, our common attack vector is through compromising one host and pivoting to other systems with the information obtained. It is common to see large-scale breaches utilizing this method and that is where SHIPS comes into play.
 
