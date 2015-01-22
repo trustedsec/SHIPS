@@ -1,5 +1,6 @@
 require 'base64'
 require 'time'
+require 'securerandom'
 require_relative 'sqliteorm'
 
 class Computer
@@ -79,7 +80,7 @@ class Computer
   
   def nonce=(v)
     #2147483647 is allowed and 0 is reserved
-    v = (1 + rand(2147483646)).to_s if v.nil?
+    v = (1 + SecureRandom.random_number(2147483646)).to_s if v.nil?
     @nonce = v
     @nonce
   end
@@ -87,7 +88,7 @@ class Computer
   def to_array
     [@id, @nonce, @tombstone, @password]
   end
-  
+  	
   def tombstone=(v)
     v = Time.new.to_s if v.nil?
    @tombstone = v
@@ -127,7 +128,7 @@ private
   #generates password with complexity 3 of upper/lower/number/special 
     complex = 0
     while complex < 3 do
-      newpwd = Array.new(@@password_length) { rand(94) + 30 } #array of printing chars
+      newpwd = Array.new(@@password_length) { SecureRandom.random_number(94) + 30 } #array of printing chars
       complex = complex + 1 if newpwd.index { |a| (65..90).include? a } #upper
       complex = complex + 1 if newpwd.index { |a| (97..122).include? a } #lower
       complex = complex + 1 if newpwd.index { |a| (48..57).include? a } #number

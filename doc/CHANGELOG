@@ -1,0 +1,11 @@
+~~~~~~~~~~~~~~
+version 1.0.1
+~~~~~~~~~~~~~~
+
+* switched to securerandom instead of random for password generation
+
+~~~~~~~~~~~~~~
+version 1.0
+~~~~~~~~~~~~~~
+
+* initial release of ships
