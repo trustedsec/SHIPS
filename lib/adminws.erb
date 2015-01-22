@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Admin Servlet Sample form</title></head>
+<body>
+<% unless request.query['method'] %>
+This form may not reflect the required fields for all ident methods.
+<% end %>
+<form name="adminws" method="post" action="/adminws" accept-charset="UTF-8">
+<%= ident.form_inner_html %>
+<table><tbody>
+<tr><td>method: </td><td><input type="text" name="method" value="<%= ident.name.html_esc %>"></td><td>name of ident class for authentication, may be omitted for default</td></tr>
+<tr><td>action: </td><td><input type="text" name="action"></td><td>one of new, lookup, delete, password, or clear</td></tr>
+<tr><td>computer: </td><td><input type="text" name="computer"></td><td>case senstive computer name</td></tr>
+<tr><td>password0: </td><td><input type="password" name="password0"></td><td>password to assign; empty or skip to generate</td></tr>
+<tr><td><input type="submit" name="submit"></td></tr>
+</tbody></table>
+</form>
+</body>
+</html>
+ 

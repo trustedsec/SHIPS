@@ -1,0 +1,78 @@
+#This config file uses YAML formating
+#web: #Web servers settings Stanza
+ #port: #bind port for web server
+ #daemonUser: #User the server will su to after starting
+ #Log: Location for web logs
+ #SSLCertificate: #PEM encoded server certificate
+ #SSLPrivateKey: #PEM encoded server key
+ #serverName: #Host header value for server
+#
+#app: #Application settings stanza
+#logoGIF: /path/to/logo/gif/file
+#forground: #when true do not daemonize
+#datapath: #path to sqlite file
+#owner_uid: #token of super user
+#owner_ident: #login ident type of super user
+####If the superuser token exists in multiple idenity backends
+####the user will only be treated as the superuser when login
+####is performed using identclass specified for owner_ident
+#login_idents: #An array of allowed ident types for login
+ # - #IdentClassName 
+ # - #IdentClassName2
+####IdentClasses may be one or more of, IdentSQLite, IdentLDAP
+####or IdentETC(on Linux) as well as any custom IdentClass you
+####have implemented and loaded with -r
+#defaultIdent: #IdentClass for login redirects
+#ComputerValidators: #An arry of validators to use for 'new' Computers
+ # - SourceOne
+####ValidateAny is a built in that can be used if you do not have an
+####an external directory and want to allow all hosts to 
+####initially populate the database
+####other validators are the builtin
+####ValidateLDAP, or anything custom loaded with -r
+####if none are specified only computers in the database 
+####will be allowed to set records.
+#syleSheet: #A file contain the style sheet to serve
+
+#rules: #Stanza for computer password settings
+ #length: #Length of password
+ #age: #age in days between scheduled rotations
+
+#moduleOptions: #options stanza values are passed to identClass.new on login
+#### Also passed to any ComputerValidateClass.new for any objects of that
+#### kind loaded.  
+####These values are passed as a hash.
+#key1: #value
+#key2: #value2 
+
+web:
+ port: 443
+ daemonUser: http
+# Log: /opt/webapp/var/log/passwordserver.log
+# SSLCertificate: /opt/webapp/etc/ssl.pem
+# SSLPrivateKey: /opt/webapp/etc/sssl.key
+ serverName: 127.0.0.1
+# sessionTimeout: 300
+ 
+app:
+ forground: false
+# datapath: /opt/webapp/var/data/passwordsever.sqlite
+ owner_uid: admin
+ owner_ident: IdentSQLite
+ login_idents:
+  - IdentSQLite
+  - IdentLDAP
+ ComputerValidators:
+  - ValidateAny
+ defaultIdent: IdentSQLite
+ syslog: true 
+# styleSheet: /opt/webapp/etc/style.css
+
+moduleOptions:
+ ldapGroupDN: CN=authorized,OU=Groups,DC=company,DC=com  
+ ldapUserOU: OU=Users,DC=company,DC=com  
+ ldapComputerOU: OU=Computers,DC=company,DC=com  
+ ldapServer: 10.0.0.1  
+ ldapPort: 389  
+ ldapUserDN: CN=ldapreader,OU=Users,DC=company,DC=com  
+ ldapPassword: password  
