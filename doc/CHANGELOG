@@ -1,4 +1,10 @@
 ~~~~~~~~~~~~~~
+version 1.1.1
+~~~~~~~~~~~~~~
+
+* Made a 1 byte change to SHIPS.  There is a typo that can result in a 1E or 1F character in passwords, apparently windows machines don't have a glyph to display it and in any case would be a challenge if someone is typing rather than copy/pasting the password values.
+
+~~~~~~~~~~~~~~
 version 1.1
 ~~~~~~~~~~~~~~
 
