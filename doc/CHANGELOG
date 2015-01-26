@@ -1,4 +1,10 @@
 ~~~~~~~~~~~~~~
+version 1.1.2
+~~~~~~~~~~~~~~
+
+* Fixes and issue that caused session timeouts to use IdentSQLite even when it was not the default Ident. 
+
+~~~~~~~~~~~~~~
 version 1.1.1
 ~~~~~~~~~~~~~~
 

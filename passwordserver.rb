@@ -121,10 +121,10 @@ Computer.password_length = settings['rules', 'length', 20]
 validators = ComputerValidator.createObjects(settings['moduleOptions']).select { |v| settings['app', 'ComputerValidators', []].include? v.class.name }
 
 #Application session sevlets
-server.mount('/test', WEBrick::USA::SessionServlet, sessionManager, identClass(settings['app', 'default_ident', 'IdentSQLite']))
-server.mount('/admin', ServletAdmin, sessionManager, identClass(settings['app', 'default_ident', 'IdentSQLite']), erbAdmin)
-server.mount('/export', ServletExport, sessionManager, identClass(settings['app', 'default_ident', 'IdentSQLite']))
-server.mount('/users', ServletUsers, sessionManager, identClass(settings['app', 'default_ident', 'IdentSQLite']),
+server.mount('/test', WEBrick::USA::SessionServlet, sessionManager, identClass(settings['app', 'defaultIdent', 'IdentSQLite']))
+server.mount('/admin', ServletAdmin, sessionManager, identClass(settings['app', 'defaultIdent', 'IdentSQLite']), erbAdmin)
+server.mount('/export', ServletExport, sessionManager, identClass(settings['app', 'defaultIdent', 'IdentSQLite']))
+server.mount('/users', ServletUsers, sessionManager, identClass(settings['app', 'defaultIdent', 'IdentSQLite']),
 	settings['app', 'login_idents', ['IdentSQLite']].include?('IdentSQLite'), erbUsers)
 
 #Webservice servlets
