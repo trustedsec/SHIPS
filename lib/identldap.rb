@@ -23,6 +23,7 @@ include LdapFns
     server = nil
     if server = bindServer(dn, pass)
       @usertoken = user
+      @username = user
       server.unbind
       return true 
     end
