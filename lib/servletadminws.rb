@@ -31,15 +31,17 @@ class ServletAdminWS < WEBrick::HTTPServlet::AbstractServlet
   def auth(method, form_data, optional)
     ident = get_ident(method)
     user = ident.new(optional)
-    raise SecurityErorr, 'logon credientials invalid' unless user.login(form_data)
+    raise SecurityError, 'logon credientials invalid' unless user.login(form_data)
     return user
   end
   
-  def exec_request(query, superuser)
+  def exec_request(query, ident)
+    superuser =  WEBrick::USA::Auth::ACL.is_super?(ident)
     message = ''
     computer = Computer.new.load query['computer']
     case query['action']
     when 'lookup'
+      Syslog.notice("#{ ident.username } lookup for computer #{ computer.name }") if Syslog.opened?
       message = computer ? 'true' : 'false'
     when 'new'
       raise SecurityError, 'only the super user can create a new computer' unless superuser
@@ -48,20 +50,24 @@ class ServletAdminWS < WEBrick::HTTPServlet::AbstractServlet
       computer.name = query['computer']
       computer.password = query['password0'] || nil
       computer.save
+      Syslog.notice("#{ ident.username } modified the computer #{ computer.name }") if Syslog.opened?
       message = 'true'
     when 'password'
       raise ArgumentError, 'computer not found' unless computer
       computer.password = query['password0']
       computer.save
+      Syslog.notice("#{ ident.username } modified the computer #{ computer.name }") if Syslog.opened?
       message = 'true'
     when 'delete' 
       raise SecurityError 'only the super user can delete computers' unless superuser
       computer.delete if computer
+      Syslog.notice("#{ ident.username } deleted the computer #{ computer.name } and its passwords") if Syslog.opened?
       message = 'true'
     when 'clear'
       raise ArgumentError, 'computer not found' unless computer
       computer.nonce = 0
       computer.save
+      Syslog.notice("#{ ident.username } cleared nonce value for #{ computer.name }") if Syslog.opened?
       message = 'true'
     else
       raise ArgumentError, 'action is not valid'
@@ -87,7 +93,7 @@ class ServletAdminWS < WEBrick::HTTPServlet::AbstractServlet
     response['Content-Type'] = 'text/html'
     request.query.each { |k,v| v.force_encoding('UTF-8') }
     ident = auth(request.query['method'], request.query, @optional)
-    response.body = html(exec_request(request.query, WEBrick::USA::Auth::ACL.is_super?(ident)))
+    response.body = html(exec_request(request.query, ident))
     response.status = @@RESPONCE_OK
   rescue SecurityError => e
     response.status = @@RESPONCE_UNAUTH
