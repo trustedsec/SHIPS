@@ -140,7 +140,7 @@ server.mount('/', ServletLogin, settings['app', 'login_idents', ['IdentSQLite']]
 rescue StandardError => e
   Syslog.crit("#{e.message} - #{e.backtrace}")  if Syslog.opened?
   puts "#{e.message} - #{e.backtrace}" if settings['app','forground', false]
-  databaseConnection.close
+  databaseConnection.close if databaseConnection
   exit(1)
 end
 

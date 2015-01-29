@@ -69,6 +69,7 @@ class ServletAdminWS < WEBrick::HTTPServlet::AbstractServlet
   end
   
   def do_GET(request, response)
+    response['Content-Type'] = 'text/html'
     request.query.each { |k,v| v.force_encoding('UTF-8') }
     ident = get_ident(request.query['method'])
     response.status = @@RESPONCE_OK
@@ -83,6 +84,7 @@ class ServletAdminWS < WEBrick::HTTPServlet::AbstractServlet
   end
   
   def do_POST(request, response)
+    response['Content-Type'] = 'text/html'
     request.query.each { |k,v| v.force_encoding('UTF-8') }
     ident = auth(request.query['method'], request.query, @optional)
     response.body = html(exec_request(request.query, WEBrick::USA::Auth::ACL.is_super?(ident)))
