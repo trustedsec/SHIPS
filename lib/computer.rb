@@ -128,6 +128,7 @@ private
   def generate_password
   #generates password with complexity 3 of upper/lower/number/special 
     complex = 0
+    pwd = nil
     while complex < 3 do
       complex = 0
       newpwd = Array.new(@@password_length) { SecureRandom.random_number(94) + 32 } #array of printing chars
@@ -137,8 +138,10 @@ private
       complex = complex + 1 if newpwd.index { |a| ((32..47).include? a) or #specials
                       				  ((58..64).include? a) or 
                       				  ((91..96).include? a) or
-                      				  ((123..126).include? a) } 
+                      				  ((123..126).include? a) }
+     pwd = newpwd.map { |a| a.chr }.join
+     complex = 0 unless pwd.length == pwd.squeeze.length                  				   
     end
-    newpwd.map { |a| a.chr }.join
+    pwd
   end
 end
