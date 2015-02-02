@@ -243,7 +243,8 @@ End If
 
 If (False = ChangePassword(struser, strname, response)) Then
 	wshShell.LogEvent ERROR, "SetAdminPass: Change password failed!" 
-	wscript.quit 1
+	'The server already thinks the pwd is changed try again at the next interval
+	info(3) = "1900-01-01 00:00:00"
 End If
 
 wshShell.LogEvent INFORMATION, "SetAdminPass: Administrator password changed!" 
