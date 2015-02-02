@@ -100,6 +100,7 @@ class Computer
     raise ArgumentError, 'Password exceeds the maximum allowed length (255)' if v.length > 255
     self.password1 = @password #store the old value
     @password = v
+    @tombstone = Time.new.to_s
     @password
   end 
   
