@@ -128,6 +128,7 @@ private
   #generates password with complexity 3 of upper/lower/number/special 
     complex = 0
     while complex < 3 do
+      complex = 0
       newpwd = Array.new(@@password_length) { SecureRandom.random_number(94) + 32 } #array of printing chars
       complex = complex + 1 if newpwd.index { |a| (65..90).include? a } #upper
       complex = complex + 1 if newpwd.index { |a| (97..122).include? a } #lower
