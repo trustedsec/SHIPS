@@ -9,7 +9,7 @@ class ServletUsers < WEBrick::USA::SessionServlet
   end
   
   def handle_GET(request, response, session)
-    raise ArgumentError, 'Page not availible for configured Ident methods' unless @enabled 
+    raise ArgumentError, 'Page not available for configured Ident methods' unless @enabled
     raise SecurityError, 'Only the superuser may access this page'  unless WEBrick::USA::Auth::ACL.is_super?(session.identity)
     request.query.each { |k,v| v.force_encoding('UTF-8') }
     
@@ -32,11 +32,11 @@ class ServletUsers < WEBrick::USA::SessionServlet
   
   def handle_POST(request, response, session)
     request.query.each { |k,v| v.force_encoding('UTF-8') }
-    raise SecurityError, 'Page not availible for configured Ident methods' unless @enabled 
+    raise SecurityError, 'Page not available for configured Ident methods' unless @enabled
     raise SecurityError, 'Only the superuser may access this page'  unless WEBrick::USA::Auth::ACL.is_super?(session.identity)
     raise ArgumentError, 'No user object in session' unless session.variables['user']
     if request.query['New']
-      raise ArgumentErorr, 'The user account already exists' if IdentSQLite.new.load(request.query['username'])
+      raise ArgumentError, 'The user account already exists' if IdentSQLite.new.load(request.query['username'])
       raise ArgumentError, 'Password may not be blank' unless request.query['password'].length > 0
       raise ArgumentError, 'Passwords do not match' unless request.query['password'] == request.query['confirm']
       session.variables['user'].username = request.query['username']

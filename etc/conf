@@ -1,4 +1,4 @@
-#This config file uses YAML formating
+#This config file uses YAML formatting
 #web: #Web servers settings Stanza
  #port: #bind port for web server
  #daemonUser: #User the server will su to after starting

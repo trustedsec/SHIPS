@@ -9,17 +9,17 @@ module SQLiteORM
     base.send(:private, :migrate)
   end
   
-  def statement_generator(opperation=:select)
+  def statement_generator(operation=:select)
     names = instance_variables.map { |x| x.to_s[1..-1] }
     sql = ''
-    case opperation
+    case operation
     when :select
       sql = "SELECT #{ names.join(',') } FROM #{ self.class.name } WHERE id = ?"
     when :insert
       sql = "INSERT INTO #{ self.class.name } (#{ names.join(',') }) VALUES (#{ Array.new(names.count,'?').join(',') })"
     when :update
       sql = "UPDATE #{ self.class.name } SET "
-      sql = sql + (names.map { |x| "#{x} = ?"}.join(',')) + "WHERE id = ?"
+      sql = sql + (names.map { |x| "#{x} = ?"}.join(',')) + 'WHERE id = ?'
     when :delete
       sql = "DELETE FROM #{ self.class.name } WHERE id = ?"
     end
@@ -43,7 +43,7 @@ module SQLiteORM
   def load(id=nil)
     migrate #hack
     id = @id unless id
-    raise ArgumentError, "No object reference, id is required" unless id
+    raise ArgumentError, 'No object reference, id is required' unless id
     raise RuntimeError, "#{self.class.name} model not connected to database" unless defined?(@@sync)
     row = nil
     @@sync.synchronize { row = @@database.get_first_row(statement_generator(:select), [id]) } 

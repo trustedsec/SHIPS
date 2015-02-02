@@ -16,7 +16,7 @@ include LdapFns
     user = form_data['username'].force_encoding('UTF-8')
     pass = form_data['password'].force_encoding('UTF-8')
     checkString(user)
-    raise RuntimeError, 'LDAP Server Bind Failded' unless server = bindServer
+    raise RuntimeError, 'LDAP Server Bind Failed' unless server = bindServer
     filter = "(&(objectclass=user)(sAMAccountName=#{user})(memberof=#{@ldapGroupDN}))"
     return false unless  dn = findIn(server, @ldapUserOU, filter)
     server.unbind

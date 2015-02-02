@@ -1,7 +1,7 @@
 #webservice for admin functions
-#has to reimplement alot of logon function sadly
+#has to reimplement a lot of logon function sadly
 class ServletLogin < WEBrick::HTTPServlet::AbstractServlet
-  @@RESPONCE_OK = "200"
+  @@RESPONCE_OK = '200'
   
   def initialize(server, idents, ident_default, template)
     @idents = idents

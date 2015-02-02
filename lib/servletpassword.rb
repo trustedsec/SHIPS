@@ -1,7 +1,7 @@
 #webservice for setting computer passwords
 class ServletPassword < WEBrick::HTTPServlet::AbstractServlet
-  @@RESPONCE_OK = "200"
-  @@RESPONCE_REJECT = "500"
+  @@RESPONCE_OK = '200'
+  @@RESPONCE_REJECT = '500'
   
   def initialize(server, validators)
     @validators = validators
@@ -23,6 +23,7 @@ class ServletPassword < WEBrick::HTTPServlet::AbstractServlet
   end
   
   def do_GET(request, response)
+    nonce = 0
     raise ArgumentError, 'Query did not include name' unless request.query['name']  
     name = request.query['name'].force_encoding('UTF-8') 
     nonce = request.query['nonce'].force_encoding('UTF-8') if request.query['nonce']
@@ -46,11 +47,11 @@ class ServletPassword < WEBrick::HTTPServlet::AbstractServlet
     response.body = response_document(true, computer.enc_password, computer.nonce, computer.expire_time)
     
   rescue ArgumentError => e
-    Syslog.err("#{ name || 'unknown' } - #{ e.message }") if Syslog.opened?
-    response.status = @@RESPONCE_REJECT = "500"
+    Syslog.err("#{ name ||= 'unknown' } - #{ e.message }") if Syslog.opened?
+    response.status = @@RESPONCE_REJECT = '500'
     response.body = response_document(false, e.message)
   rescue StandardError => e
-    response.status = @@RESPONCE_REJECT = "500"
+    response.status = @@RESPONCE_REJECT = '500'
     response.body = response_document(false, 'Unable to process request')
     Syslog.crit("#{ e.message } - #{ e.backtrace }") if Syslog.opened? 
   end

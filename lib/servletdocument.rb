@@ -1,5 +1,5 @@
 class ServletDocument <  WEBrick::HTTPServlet::AbstractServlet
-#Simple servlet to server a single fixed WWW docuemnt
+#Simple servlet to serve a single fixed WWW document
   def initialize(server, mimetype, content_string)
     @mimetype = mimetype
     @content = content_string

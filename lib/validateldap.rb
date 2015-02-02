@@ -14,7 +14,7 @@ include LdapFns
 #binding.pry
     server = nil
     checkString(computerName)
-    raise RuntimeError, 'LDAP Server Bind Failded' unless server = bindServer
+    raise RuntimeError, 'LDAP Server Bind Failed' unless server = bindServer
     filter = "(&(objectclass=computer)(name=#{computerName}))"
     dn = findIn(server, @ldapComputerOU, filter) || nil
     server.unbind

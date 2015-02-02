@@ -21,7 +21,7 @@ class ServletAdmin < WEBrick::USA::SessionServlet
     request.query.each { |k,v| v.force_encoding('UTF-8') }
     case
     when request.query['New']
-      raise SecurityErorr, 'Only the super user can insert computers into the database' unless superuser
+      raise SecurityError, 'Only the super user can insert computers into the database' unless superuser
       session.variables['computer'] = Computer.new
       session.variables['computer'].name = request.query['computer']
       session.variables['computer'].password = nil
@@ -29,7 +29,7 @@ class ServletAdmin < WEBrick::USA::SessionServlet
       session.variables['message'] = 'New Computer, click Save to add to the database'
     when request.query['Lookup']
       session.variables['computer'] = Computer.new.load(request.query['computer']) || nil
-      Syslog.notice("#{ session.identity.username } retrived passwords for #{ request.query['computer'] }") if Syslog.opened?
+      Syslog.notice("#{ session.identity.username } retrieved passwords for #{ request.query['computer'] }") if Syslog.opened?
     when request.query['Delete']
       raise SecurityError, 'Only the super user can delete computer from the database' unless superuser
       raise ArgumentError, 'Must lookup computer first / no active computer in session' unless session.variables['computer']

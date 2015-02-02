@@ -1,9 +1,9 @@
 #webservice for admin functions
 #has to reimplement alot of logon function sadly
 class ServletAdminWS < WEBrick::HTTPServlet::AbstractServlet
-  @@RESPONCE_OK = "200"
-  @@RESPONCE_REJECT = "500"
-  @@RESPONCE_UNAUTH = "403"
+  @@RESPONCE_OK = '200'
+  @@RESPONCE_REJECT = '500'
+  @@RESPONCE_UNAUTH = '403'
   
   def initialize(server, idents, ident_default, template, optional=nil)
     @idents = idents
@@ -85,7 +85,7 @@ class ServletAdminWS < WEBrick::HTTPServlet::AbstractServlet
     response.body = html(e.message)  
   rescue StandardError => e
     response.status = @@RESPONCE_REJECT 
-    response.body = html("There was a problem processing this request") 
+    response.body = html('There was a problem processing this request')
     Syslog.crit("#{ e.message } - #{ e.backtrace }") if Syslog.opened? 
   end
   
@@ -100,7 +100,7 @@ class ServletAdminWS < WEBrick::HTTPServlet::AbstractServlet
     response.body = html(e.message)  
   rescue StandardError => e
     response.status = @@RESPONCE_REJECT 
-    response.body = html("There was a problem processing this request") 
+    response.body = html('There was a problem processing this request')
     Syslog.crit("#{ e.message } - #{ e.backtrace }") if Syslog.opened?    
   end
 end

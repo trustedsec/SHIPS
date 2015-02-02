@@ -20,7 +20,7 @@ begin
   require 'ldap'
   ldapPresent = true
 rescue LoadError
-  puts "Ruby-Ldap not installed starting without LDAP support."
+  puts 'Ruby-Ldap not installed starting without LDAP support.'
   ldapPresent = false
 end
 require_relative 'lib/validateldap.rb' if ldapPresent
@@ -145,11 +145,11 @@ rescue StandardError => e
 end
 
 #Make it easy to stop the program with [ctrl]-[c]
-trap("INT") { server.shutdown }
+trap('INT') { server.shutdown }
 #Be nice to init scripts
-trap("TERM") { server.shutdown }
+trap('TERM') { server.shutdown }
 #allow logrotate
-trap("HUP") { weblog.reopen(settings['web','Log', application_dir + '/var/log/passwordserver.log'], 'a+') }
+trap('HUP') { weblog.reopen(settings['web','Log', application_dir + '/var/log/passwordserver.log'], 'a+') }
 
 #start the web server; program is not listing until this call
 server.start

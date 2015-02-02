@@ -35,7 +35,7 @@ module LdapFns
   
   def checkString(v)
     safe = 0
-    v.each_char { |c| safe += 1 if  (["\\", "|", "(", ")", "*", "=", "/", "&", "<", ">"].include? c) }
+    v.each_char { |c| safe += 1 if  (["\\", '|', '(', ')', '*', '=', '/', '&', '<', '>'].include? c) }
     raise ArgumentError, 'String contains disallowed characters'  unless safe == 0
   end
   
@@ -44,7 +44,7 @@ module LdapFns
     attrs = ['dn']
     r = server.search2(ou, scope, filter, attrs)
     if ( 1 == r.length )
-      return r[0]["dn"][0]
+      return r[0]['dn'][0]
     end
     nil
   end

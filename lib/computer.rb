@@ -38,7 +38,7 @@ class Computer
     raise ArgumentError, 'Must provide value for computer name' unless v
     raise ArgumentError, 'Computer names are limited to 15 characters' unless v.length < 16
     char_cnt = 0
-    ["/", "[", "]", "\"", ":", ";", "|", "<", ">", "+", "=", ",", "?", "*", " ", "_", "&", "\0"].each { |c| char_cnt += v.count(c) }
+    ['/', '[', ']', "\"", ':', ';', '|', '<', '>', '+', '=', ',', '?', '*', ' ', '_', '&', "\0"].each { |c| char_cnt += v.count(c) }
     raise ArgumentError, 'Computer name contains illegal characters' if char_cnt > 0
     @id = v.downcase
   end

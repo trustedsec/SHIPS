@@ -10,7 +10,7 @@ require 'usa'
 class IdentSample < WEBrick::USA::User::Identity
   
   def login(form_data)
-    if form_data['username'] == 'admin' and form_data['password'] = 'password'
+    if form_data['username'] == 'admin' and form_data['password'] == 'password'
       #@usertoken and @username must both be defined after a successful login
       #@usertoken need not be equal to username but could be, or it might be a
       #backend system value such as a uid or sid 

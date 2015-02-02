@@ -20,7 +20,7 @@ class IdentSQLite < WEBrick::USA::User::Identity
   
   def username=(v)
     char_cnt = 0
-    ["/", "[", "]", "\"", ":", ";", "|", "<", ">", "+", "=", ",", "?", "*", " ", "_", "&", "(", ")", "\0"].each { |c| char_cnt += v.count(c) }
+    ['/', '[', ']', "\"", ':', ';', '|', '<', '>', '+', '=', ',', '?', '*', ' ', '_', '&', '(', ')', "\0"].each { |c| char_cnt += v.count(c) }
     raise ArgumentError, 'User names cannot contain special characters.' unless char_cnt == 0
     @id = v.downcase
   end
