@@ -1,1 +1,0 @@
-INSERT INTO "IdentSQLite" VALUES('admin',500,NULL,NULL,1590908842,'fZNkktXzFGw+Wxl3lXsz7pOu9P7ibEyOmW0vk4gs+oM=');
