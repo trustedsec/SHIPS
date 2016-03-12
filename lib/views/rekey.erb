@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<strong>Warning!</strong> This operation is irreversible. The rekey operation allows you to upload a your former private
+key, if you have replaced you key pair.  The old key will be used to decrypt your documents so they can be ciphered using
+your current public key.  If you have created any secure documents after changing your key and before this operation, they
+will be lost.  You should note the values of any such records before proceeding.
+<br><br>
+Self checks:<br>
+(1) Never upload you current private key, this could compromise the security of stored documents.<br>
+(2) Note the content of any documents that may have been created after the key change and before this operation<br>
+(3) Ensure that you upload the correct previous key, sending an incorrect RSA document such as one from another application <strong>will</strong> result in data loss.<br>
+<br><br>
+<form action="/rekey" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+  <%= csrf_gard %>
+  <div class="table">
+    <div class="row">
+      <span class="td">Select your <strong>old</strong> RSA private key pem file.<br></span>
+      <span class="td"><input type="file" name="private_key"></span>
+    </div>
+    <div class="row">
+      <span class="td"><input type="submit" name="submit" value="Ok"></span>
+    </div>
+  </div>
+</form>
+<%= session.variables['results'].html_esc %>
+</body>
+</html>

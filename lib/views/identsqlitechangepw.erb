@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <form action="/identsqlitechangepw" method="post" accept-charset="UTF-8">
+    <%= csrf_gard %>
+      <div class="table">
+        <div class="row">
+          <span class="td">Old Password</span>
+          <span class="td"><input type="password" autocomplete="off" name="old_password"></span>
+        </div>
+        <div class="row">
+          <span class="td">New Password</span>
+          <span class="td"><input type="password" autocomplete="off" name="password"></span>
+        </div>
+        <div class="row">
+          <span class="td">Confirm New Password</span>
+          <span class="td"><input type="password" autocomplete="off" name="password1"></span>
+        </div>
+        <div class="row">
+          <span class="td"><input type="submit" name="Update Password" value="Update Password"></span>
+        </div>
+      </div>
+    </form><br>
+    <%= session.variables['IdentSQLiteChangePW'].html_esc %>
+</body>
+</html>

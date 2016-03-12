@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function OnPageLoad() {
+        IdentOptions();
+        UserOrGroup();
+    };
+
+    function groupSelect() {
+        var client;
+        var identity;
+        var sel;
+        sel = document.getElementById('group_select');
+        identity = document.getElementById('identity');
+        client = new XMLHttpRequest();
+        client.open('GET', '/selecthelper?type=groups&selected='.concat(sel.value,'&identType=',identity.value), false);
+        client.send();
+        if (client.status == 200) {
+            sel.innerHTML = client.responseText;
+        };
+    };
+
+    function userSelect() {
+        var client;
+        var identity;
+        var sel;
+        sel = document.getElementById('user_select');
+        identity = document.getElementById('identity');
+        client = new XMLHttpRequest();
+        client.open('GET', '/selecthelper?type=users&selected='.concat(sel.value,'&identType=',identity.value), false);
+        client.send();
+        if (client.status == 200) {
+            sel.innerHTML = client.responseText;
+        };
+    };
+
+    function UserOrGroup() {
+        var user_div;
+        var group_div;
+        var group_ace;
+        group_ace = document.getElementById('group_ace');
+        user_div = document.getElementById('user_div');
+        group_div = document.getElementById('group_div');
+        user_div.style.display = 'none';
+        group_div.style.display = 'none';
+        if (group_ace.checked) {
+            group_div.style.display = "table-row";
+            groupSelect();
+        } else {
+            user_div.style.display = "table-row";
+            userSelect();
+        };
+    };
+
+    function IdentOptions() {
+        var identity;
+        var client;
+        identity = document.getElementById('identity');
+        client = new XMLHttpRequest();
+        client.open('GET', '/selecthelper?type=identTypes&selected='.concat(identity.value), false);
+        client.send();
+        if (client.status == 200) {
+          identity.innerHTML = client.responseText;
+        };
+    };
+  </script>
+</head>
+<body onload="OnPageLoad();">
+<form action="/ace" method="post" accept-charset="UTF-8">
+<%= csrf_gard %>
+<input type="hidden" name="acl" value="<%= session.variables['acl'].id %>">
+  Access Control Entry
+  <div class="hline">&nbsp;</div>
+  <div class="table">
+    <div class="row">
+      <span class="td">Identity Class</span>
+      <span class="td">
+        <select onchange="UserOrGroup();" id="identity" name="identity">
+            <option value="<%= session.variables['ace'].ident_class.html_esc %>"><%= session.variables['ace'].ident_class.html_esc %></option>
+        </select>
+      </span>
+    </div>
+    <div class="row">
+      <span class="td">Group ACE</span>
+      <span class="td">
+        <input onchange="UserOrGroup();" id="group_ace" name="group" type="checkbox" value="true" <%= session.variables['ace'].group? ? 'checked' : '' %>>
+      </span>
+    </div>
+    <div id="user_div" class="row">
+      <span class="td">User Name</span>
+      <span class="td">
+        <select id="user_select" name="user_token">
+          <option value="<%= session.variables['ace'].token.html_esc %>">Retrieving user list please wait...</option>
+        </select>
+      </span>
+    </div>
+    <div id="group_div" class="row">
+      <span class="td">Group Name</span>
+      <span class="td">
+        <select id="group_select" name="group_token">
+          <option value="<%= session.variables['ace'].token.html_esc %>">Retrieving group list please wait...</option>
+        </select>
+      </span>
+    </div>
+    <div class="row">
+      <span class="td">Read Permission</span>
+      <span class="td">
+        <input type="checkbox" name="read" value="true" <%= session.variables['ace'].read ? 'checked' : '' %>>
+      </span>
+    </div>
+    <div class="row">
+      <span class="td">Write Permission</span>
+      <span class="td">
+        <input type="checkbox" name="write" value="true" <%= session.variables['ace'].write ? 'checked' : '' %>>
+      </span>
+    </div>
+    <div class="row">
+      <% if session.variables['ace'].id.nil? %>
+        <span class="td">&nbsp;</span>
+      <% else %>
+          <span class="td"><input type="submit" name="action" value="Delete"></span>
+      <% end %>
+      <span class="td"><input type="submit" name="action" value="Save"></span>
+    </div>
+  </div>
+</form>
+</body>
+</html>

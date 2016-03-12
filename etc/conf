@@ -1,0 +1,59 @@
+web:
+ port: 443
+ serverName: 172.16.235.1
+ maxclients: 1000
+ #daemonUser: daemon
+ #SSLCertificate: /path/to/cert/pem
+ #SSLPrivateKey: /path/to/key
+
+data:
+ dataPath: /var/cache/SHIPS.sqlite
+# styleSheet: /path/to/style/sheet
+
+app:
+ syslog: true
+ sessionTimeout: 300
+ foreground: true
+ superUserIdent: IdentSQLite
+ superUserToken: "1"
+ ACLAuthorsIdent: IdentLDAP
+ ACLAuthorsToken: S-1-5-21-3882956444-149478881-1526783422-2116
+ defaultLoginIdent: IdentLDAP
+ allowedLoginIdents:
+  - IdentSQLite
+  - IdentLDAP
+
+devices:
+ length: 20
+ age: 7
+
+identityOptions:
+#  exampleOption: exampleValue
+  identLDAP_host: 10.10.10.10
+  identLDAP_port: 389
+#  identLDAP_encryption: simple_tls
+  identLDAP_user_base: DC=example,DC=local
+  identLDAP_group_base: OU=Test,DC=example,DC=local
+  identLDAP_name_attribute: sAMAccountName
+  identLDAP_group_class: group
+  identLDAP_user_class: user
+  identLDAP_token_attribute: objectSid
+  identLDAP_group_attribute: memberOf
+  identLDAP_user_attribute: "member:1.2.840.113556.1.4.1941:"
+  identLDAP_group_required: CN=SHIPS users,OU=Test,DC=example,DC=local
+  identLDAP_username: CN=ships DS. reader,OU=Test,DC=example,DC=local
+  identLDAP_password: SomeReallHardPassword
+  identDevice_default_folder: 2
+  identDevice_validators:
+   - DeviceValidatorLDAP
+
+validatorOptions:
+#  exampleOption: exampleValue
+  DeviceValidatorLDAP_host: 10.10.10.10
+#  DeviceValidatorLDAP_encryption: simple_tls
+  DeviceValidatorLDAP_port: 389
+  DeviceValidatorLDAP_base: DC=example,DC=local
+  DeviceValidatorLDAP_username: CN=ships DS. reader,OU=Test,DC=example,DC=local
+  DeviceValidatorLDAP_password: SomeReallHardPassword
+  DeviceValidatorLDAP_class: computer
+  DeviceValidatorLDAP_name_attribute: name

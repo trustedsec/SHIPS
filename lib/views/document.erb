@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+  <% if session.variables['document'].type == :secure %>
+  <script type="text/javascript" src="/assets/js/pidcrypt"></script>
+  <script type="text/javascript" src="/assets/js/pidcrypt_util"></script>
+  <script type="text/javascript" src="/assets/js/asn1"></script>
+  <script type="text/javascript" src="/assets/js/jsbn"></script>
+  <script type="text/javascript" src="/assets/js/rng"></script>
+  <script type="text/javascript" src="/assets/js/prng4"></script>
+  <script type="text/javascript" src="/assets/js/rsa"></script>
+  <script type="text/javascript" src="/assets/js/string_extend"></script>
+  <script type="text/javascript" src="/assets/js/certparser"></script>
+
+  <script>
+    function decipher(element_id){
+      var ctext = document.getElementById(element_id).value;
+      if (ctext.length == 0) { return ;};
+      ctext = pidCryptUtil.convertToHex(pidCryptUtil.decodeBase64(ctext));
+      var params = certParser(document.getElementById('prvkey').value);
+      var key = pidCryptUtil.decodeBase64(params.b64);
+      var rsa = new pidCrypt.RSA();
+      var asn = pidCrypt.ASN1.decode(pidCryptUtil.toByteArray(key));
+      var tree = asn.toHexTree();
+      rsa.setPrivateKeyFromASN(tree);
+      document.getElementById(element_id).value = rsa.decrypt(ctext);
+    };
+  </script>
+  <% else %>
+  <script> function decipher(element_id){ };</script>
+  <% end %>
+  <script>
+
+    function updateACL() {
+      var client;
+      client = new XMLHttpRequest();
+      client.open('GET', '/selecthelper?type=acl&write=true&selected=<%= session.variables['documentACL'].id.to_s %>', false);
+      client.send();
+      if (client.status == 200) {
+        document.getElementById('selectACL').innerHTML = client.responseText;
+      } else {
+          alert('Could not get document ACL information');
+      };
+    };
+
+  function updateExpiretime() {
+    var oneDay = 86400;
+    var stime = document.getElementById('stime').value;
+    var ctime = Math.round(+new Date() / 1000);
+    var select = document.getElementById('expiretime');
+    var newoption;
+
+    newoption = document.createElement('option');
+    newoption.value = stime;
+    stime = Math.round((stime - ctime) / oneDay);
+    newoption.text = 'About ' + stime.toString() + ' days';
+    select.add(newoption, 0);
+
+    newoption = document.createElement('option');
+    newoption.value = oneDay + ctime;
+    newoption.text = '1 day';
+    select.add(newoption, 1);
+
+    for (i = 2; i < 366; i++) {
+      newoption = document.createElement('option');
+      newoption.value = (oneDay * i) + ctime;
+      newoption.text = i.toString() + ' days';
+      select.add(newoption, i);
+      };
+    };
+
+    function onKeyRcved() {
+      //decode secure values
+      decipher('stime');
+      decipher('username');
+      decipher('password');
+      decipher('password1');
+      decipher('password2');
+      decipher('password3');
+      decipher('description');
+      decipher('notes');
+      decipher('url');
+      updateExpiretime();
+    };
+
+    function listener(e) {
+      <% unless req.port == 443 %>
+      if (e.origin == 'https://<%= session.domain %>:<%= req.port.to_s %>') {
+      <% else %>
+      if (e.origin == 'https://<%= session.domain %>') {
+      <% end %>
+        document.getElementById('prvkey').value = e.data.toString();
+        onKeyRcved();
+      } else { alert('message post origin violation') };
+    };
+
+    function onLoad() {
+      var cbxSecure = document.getElementById('secure');
+      if (cbxSecure.checked) {
+        //For secure docs we need to get the key setup listen to get it from 'client'
+        window.addEventListener('message', listener, false);
+        //send client a GET command to cause it to post the key back to here
+        <% unless req.port == 443 %>
+        window.parent.postMessage('GET', 'https://<%= session.domain %>:<%= req.port.to_s %>');
+        <% else %>
+        window.parent.postMessage('GET', 'https://<%= session.domain %>');
+        <% end %>
+      } else { updateExpiretime();}
+      updateACL();
+    };
+  </script>
+</head>
+<body onload="onLoad();">
+<input type="hidden" id="prvkey">
+<input type="hidden" id="stime" value="<%= session.variables['document'].expiretime.html_esc %>">
+<form action="/document" method="post" accept-charset="UTF-8">
+  <%= csrf_gard %>
+  <input type="hidden" name="document" value="<%= session.variables['document'].id.to_s %>">
+  <div class="table">
+    <div class="row">
+      <span class="td">Name</span>
+      <span class="td"><input type="text" name="name" value="<%= session.variables['document'].name.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">Description</span>
+      <span class="td"><input type="text" id="description" name="description" value="<%= session.variables['document'].description.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">Access Control List&#x3a;</span>
+      <span class="td"><select id="selectACL" name="acl"></select></span>
+    </div>
+    <div class="row">
+      <span class="td">Secure Document Storage&#x3a;</span>
+      <span class="td">
+        <% if session.variables['document'].type == :secure %>
+          <input type="checkbox" id="secure" checked="checked" name="secure" value="secure">
+        <% else %>
+          <input type="checkbox" id="secure" name="secure" value="secure">
+        <% end %>
+      </span>
+    </div>
+    <div class="row">
+      <span class="td">Device that will rotate passwords&#x3a;</span>
+      <span class="td">
+      <% if session.variables['document'].device? %>
+        <input disabled type="checkbox" id="device" checked="checked" name="device" value="device">
+      <% else %>
+        <input type="checkbox" id="device" name="device" value="device" onchange="alert('Converting this document to a device will allow external updates.  This operation cannot be undone.');">
+      <% end %>
+    </span>
+    </div>
+    <div class="row">
+      <span class="td">Expiration Time</span>
+      <span class="td"><select name="expiretime" id="expiretime"></select></span>
+    </div>
+    <div class="row">
+      <span class="td">User Name</span>
+      <span class="td"><input type="text" id="username" name="username" value="<%= session.variables['document'].username.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">URL</span>
+      <span class="td"><input type="text" id="url" name="url" value="<%= session.variables['document'].url.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">Password</span>
+      <span class="td"><input type="text" name="password" id="password" value="<%= session.variables['document'].password.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">Previous Password 1</span>
+      <span class="td"><input readonly type="text" name="password1" id="password1" value="<%= session.variables['document'].password1.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">Previous Password 2</span>
+      <span class="td"><input readonly type="text" name="password2" id="password2" value="<%= session.variables['document'].password2.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">Previous Password 3</span>
+      <span class="td"><input readonly type="text" name="password3" id="password3" value="<%= session.variables['document'].password3.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">Notes</span>
+      <span class="td"><input type="text" id="notes" name="notes" value="<%= session.variables['document'].notes.html_esc %>"></span>
+    </div>
+    <% if session.variables['documentACL'].write? %>
+        <input id='edit' type="submit" name="action" value="Save">
+        <input id="delete" type="submit" name="action" value="delete">
+        <a href="/folder" class="button">Close</a>
+    <% end %>
+  </div>
+</form>
+</body>
+</html>

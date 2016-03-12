@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+  <title>SHIPS 2 - Integrated Password Server</title>
+  <script>
+    function setContent(href) {
+      document.getElementById('content').src = href;
+    };
+
+    function listener(e) {
+      var myfrm;
+      <% unless req.port == 443 %>
+        if (e.origin == 'https://<%= session.domain %>:<%= req.port.to_s %>') {
+      <% else %>
+        if (e.origin == 'https://<%= session.domain %>') {
+      <% end %>
+        if (e.data.substring(0, 3) != 'SET') {
+          myfrm = document.getElementById('content').contentWindow;
+          <% unless req.port == 443 %>
+          myfrm.postMessage(document.getElementById('prvkey').value, 'https://<%= session.domain %>:<%= req.port.to_s %>');
+          <% else %>
+          myfrm.postMessage(document.getElementById('prvkey').value, 'https://<%= session.domain %>');
+          <% end %>
+        } else document.getElementById('prvkey').value = e.data.substring(3)
+      }
+      return false;
+    };
+  </script>
+</head>
+<body onload="setContent('/welcome');">
+<div class="table">
+  <div class="row">
+    <span class="td">
+      <a href="/welcome" target="content">
+      <img class="logo" alt="SHIPS Logo Image" src="/assets/img/logo">
+      </a>
+    </span>
+    <span class="td">
+        <a href="/logoff" class="nav">Logoff |<%= session.identity.username.html_esc %>|</a>
+        <div class="hline">&nbsp;</div>
+        <input type="hidden" id="prvkey">
+    </span>
+  </div>
+  <div class="row">
+    <span class="toolbox td" ><br>
+      <a href="/welcome" target="content">Load My Key</a><br><br>
+      <a href="/managemykey" target="content">Manage My Key</a><br><br>
+      <% if session.identity.class.name == 'IdentSQLite' %><a href="/identsqlitechangepw" target="content">Change Password</a><br><br><% end %>
+      <a href="/folder" target="content">Browse Folders</a><br><br>
+      <a href="/acls" target="content">Manage ACLs</a><br><br>
+    </span>
+    <span class="mainbox td" >
+      <iframe id="content" name="content"></iframe>
+    </span>
+  </div>
+</div>
+<br>
+<script>
+  window.addEventListener('message', listener, false);
+</script>
+</body>
+</html>

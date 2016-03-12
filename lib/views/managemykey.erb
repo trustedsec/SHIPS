@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+      function showUpload() {
+          document.getElementById('ifgenerate').style.display = 'none';
+          if (document.getElementById('action').value == 'upload') {
+              document.getElementById('upload').style.display = 'block';
+          } else {
+              document.getElementById('upload').style.display = 'none';
+          };
+      };
+          function showIfGenerate() {
+              if (document.getElementById('action').value == 'generate') {
+              document.getElementById('ifgenerate').style.display = 'block';
+          };};
+  </script>
+</head>
+    <body onload="showUpload();">
+    <% if ::PubKey.load_by_identity(session.identity) %>
+        <strong>Important! </strong>Do not overwrite or discard your current private key until you have performed a
+        <a href="/rekey" class="button"><strong>rekey</strong></a> operation,
+        failure to do so might result in loss of existing documents. You should complete your rekey as soon as possible
+        to reduce the likelyhood of shared documents ending up in an inconsistent state.  If a shared document will not decode
+        after this, have another user with access re-save the document.<br><br>
+    <% end %>
+    <form action="/managemykey" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+      <%= csrf_gard %>
+      <div class="table">
+        <div class="row">
+          <span class="td">Generate a key pair or upload public key?</span>
+          <span class="td">
+            <select id="action" name="action" onchange="showUpload();">
+                <option value="generate" selected="true">Generate</option>
+                <option value="upload">Upload</option>
+          </select>
+          </span>
+        </div>
+        <div id="upload" class="row">
+          <span class="td">Select your 4096 bit RSA public key pem file.<br></span>
+          <span class="td"><input type="file" name="public_key"></span>
+        </div>
+        <div class="row">
+          <span class="td"><input type="submit" name="submit" value="Ok" onclick="showIfGenerate();"></span>
+        </div>
+        <div class="row" id="ifgenerate">
+          <span class="td">
+            Please <a href="/logoff">Logoff</a> once your download is complete!
+          </span>
+        </div>
+      </div>
+    </form>
+    </body>
+</html>

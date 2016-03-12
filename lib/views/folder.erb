@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+
+    function showIfEdit() {
+        var btn = document.getElementById('edit');
+        var client;
+        if (btn.value == 'Edit Folder') {
+            btn.value = 'Cancel';
+            client = new XMLHttpRequest();
+            client.open('GET', '/selecthelper?type=acl&write=true&selected=<%= session.variables['acl'].id.to_s %>', false);
+            client.send();
+            if (client.status == 200) {
+                document.getElementById('selectACL').innerHTML = client.responseText;
+            }
+            document.getElementById('folderedit').style.display = 'table-row';
+            document.getElementById('name').disabled = false;
+        }else {
+            btn.value = 'Edit Folder';
+            document.getElementById('name').disabled = true;
+            document.getElementById('folderedit').style.display = 'none';
+        };
+    };
+  </script>
+</head>
+<body>
+Folder Path&#x3a;<%= session.variables['folder'].textPath.html_esc %>&#x2f;
+<form action="/folder" method="post" accept-charset="UTF-8">
+  <%= csrf_gard %>
+  <input type="hidden" name="folder" value="<%= session.variables['folder'].id %>">
+  <div class="table">
+    <div class="row2">
+      <span class="td">Folder id&#x3a;</span>
+      <span class="td"><%= session.variables['folder'].id.to_s %></span>
+    </div>
+    <div class="row2">
+      <span class="td">
+      Folder Name&#x3a;
+      </span>
+      <span class="td">
+        <input id="name" name="name" type="text" value="<%= session.variables['folder'].name.html_esc %>" disabled="disabled">&nbsp;
+        <% if session.variables['acl'].write? %>&nbsp;<input id='edit' type="button" onclick="showIfEdit();" name="edit" value="Edit Folder"><% end %>
+      </span>
+    </div>
+    <div style="display:none;" id="folderedit">
+      <div class="row">
+        <span class="td">Description&#x3a;</span>
+        <span class="td"><input type="text" name="description" value="<%= session.variables['folder'].description.html_esc %>"></span>
+      </div>
+      <div class="row">
+        <span class="td">Access Control List&#x3a;</span>
+        <span class="td"><select id="selectACL" name="acl"></select></span>
+      </div>
+      <div class="row">
+        <span class="td"><input type="submit" name="action" value="Update"></span>
+        <span class="td"><input type="submit" name="action" value="Delete"></span>
+        <span class="td"><input type="submit" name="action" value="New Subfolder"></span>
+      </div>
+    </div>
+  </div>
+</form>
+<form name="fld_content">
+  <div class="table">
+      <% if session.variables['acl'].write? %>
+      <div class="row">
+      <span class="td"><a class="button" href="/document?document=new">Create New Document Here</a></span>
+      </div>
+      <% end %>
+    <div class="row">
+      <span class="td">Current Folder Content</span>
+    </div>
+    <div class="hline">&nbsp;</div>
+    <div class="row">
+      <span class="td"><img src="/assets/img/folder"></span>
+      <span class="td"><a href="/folder?folder=<%= session.variables['folder'].parent_Folder.id.to_s %>">.. (up to parent)</a></span>
+    </div>
+    <% session.variables['folder'].each_Folder do |fld| %>
+      <% next if fld.name == '.' %>
+      <div class="row">
+        <span class="td"><img src="/assets/img/folder"></span>
+        <span class="td"><a href="/folder?folder=<%= fld.id.to_s %>"><%= fld.name.html_esc %></a></span>
+        <span class="td"><%= fld.description.html_esc %></span>
+      </div>
+    <% end %>
+    <% session.variables['folder'].each_Document do |doc| %>
+    <div class="row">
+      <span class="td"><img src="/assets/img/document"></span>
+      <span class="td"><a href="/document?document=<%= doc.id.to_s %>"><%= doc.name.html_esc %></a></span>
+      <span class="td"><%= doc.description.html_esc %></span>
+    </div>
+    <% end %>
+  </div>
+</form>
+</body>
+</html>

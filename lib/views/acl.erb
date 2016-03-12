@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <form action="/acl" method="post" accept-charset="UTF-8">
+    <%= csrf_gard %>
+    <input type="hidden" name="acl" value="<%= session.variables['acl'].id.to_i.to_s %>">
+    <div class="table">
+    <div class="row">
+      <span class="td">ACL Name&#x3a;</span>
+      <span class="td"><input type="text" name="name" value="<%= session.variables['acl'].name.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td">Description&#x3a;</span>
+      <span class="td"><input type="text" name="description" value="<%= session.variables['acl'].description.html_esc %>"></span>
+    </div>
+    <div class="row">
+      <span class="td"><br></span>
+    </div>
+    <% if session.variables['acl_auth'] %>
+      <div class="row">
+          <% if session.variables['acl'].id.nil? %>
+            <span class="td"><input type="submit" name="action" value="Save"></span>
+            <span class="td">&nbsp;</span>
+          <% else %>
+            <span class="td"><input type="submit" name="action" value="Update"></span>
+            <span class="td"><input type="submit" name="action" value="Delete"></span>
+          <% end %>
+      </div>
+    <% end %>
+    </div>
+    <div class="table">
+      <div class="row"><span class="td"><br>Access Control Entries</span></div>
+      <div class="row hline">&nbsp;</div>
+    <% cnt=0 %>
+    <% session.variables['acl'].aces.each do |ace| %>
+      <div class="row">
+        <span class="td"><%="#{(cnt += 1).to_s}. #{ace.to_s.html_esc}" %>&nbsp;&nbsp;</span>
+        <% if session.variables['acl_auth'] %>
+            <span class="td"><a class="button" href="/ace?ace=<%= ace.id.to_s %>&acl=<%= session.variables['acl'].id.to_s %>">Edit</a></span>
+        <% end %>
+      </div>
+      <% end %>
+      <% if session.variables['acl_auth'] && session.variables['acl'].id %>
+        <div class="row">
+          <span class="td"><%="#{(cnt += 1).to_s}." %></span>
+          <span class="td"><a class="button" href="/ace?acl=<%= session.variables['acl'].id.to_s %>">New ACE</a></span>
+        </div>
+      <% end %>
+    </div>
+    </form>
+</body>
+</html>

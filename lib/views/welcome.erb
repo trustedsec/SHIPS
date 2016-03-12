@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function onReadPem(evt){
+        <% unless req.port == 443 %>
+            window.parent.postMessage('SET'.concat(evt.target.result), 'https://<%= session.domain %>:<%= req.port.to_s %>');
+        <% else %>
+            window.parent.postMessage('SET'.concat(evt.target.result), 'https://<%= session.domain %>');
+        <% end %>
+    };
+
+    function onLoadKey(){
+      var reader = new FileReader();
+      var src = document.getElementById('pemfile');
+      reader.onload = onReadPem;
+      reader.readAsText(src.files[0]);
+      document.getElementById('keyLoaded').style.display = 'block';
+    };
+
+  </script>
+</head>
+<body>
+Welcome to SHIPS!<br><br>Start by opening your private key for secure document viewing.
+    You can continue without loading your key but you will only be able to view plain documents.<br><br>
+    <% if ::PubKey.load_by_identity(session.identity) %>
+        <form>
+          Select private key: <input type="file" name="pemfile" id="pemfile"><br>
+          <input type="button" id="loadkey" value="Ok" onclick="onLoadKey();">
+          <div style="display:none;" id="keyLoaded">
+            <br>
+            Your key has been loaded..
+          </div>
+        </form>
+    <% else %>
+        It does not appear you created a key pair yet.  To begin using SHIPS you will want to create a key pair.
+        You should store the private key in a safe place, such as a directory with permissions limited exclusively to
+        you.  You may wish to store the key on external media such as USB stick.  Click <strong>manage my key at the left.</strong>
+        <%if ::WEBrick::USA::Auth::ACL.is_super?(session.identity) %>
+        <br><br>
+        <strong>You are logged on as the super user.</strong>  Its strongly recommeded you create a separate account for managing your own documents.
+        The super user key should be kept in a safe offline location.  Remember a the super user's key will open any secure document!
+        <br><br>
+        <% end %>
+    <% end %>
+    <% unless ::PubKey.load_by_identity(::WEBrick::USA::Auth::ACL.super_user) %>
+        <strong>Warning</strong> the super user has not established a key pair! Orphaned documents or documents where the private key has been lost may be unrecoverable.
+    <% end %>
+
+</body>
+</html>

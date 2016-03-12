@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <form name="fld_content">
+    <div class="table">
+      <div class="row">
+        <span class="td">Access Control List</span>
+        <span class="td">Description</span>
+      </div>
+      <div class="hline">&nbsp;</div>
+      <% WEBrick::USA::Auth::ACL.each(session.identity) do |acl| %>
+      <div class="row">
+        <span class="td"><a href="/acl?acl=<%= acl.id.to_i.to_s %>"><%= acl.name.html_esc %>&nbsp;</a></span>
+        <span class="td"><%= acl.description.html_esc %></span>
+      </div>
+      <% end %>
+      <% if WEBrick::USA::Auth::ACL.acl_author? session.identity %>
+      <div class="row">
+          <span class="td"><a class="button" href="/acl">New&nbsp;</a></span>
+          <span class="td">Create new ACL</span>
+      </div>
+      <% end %>
+    </div>
+   </form>
+</body>
+</html>
