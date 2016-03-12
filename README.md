@@ -9,20 +9,32 @@ Please read the design and installation documentation located in the doc/ folder
 
 #What IS SHIPS?
 
-The Shared Host Integrated Password System (SHIPS) is a solution to provide unique and rotated local super user or administrator passwords for environments where it is not possible or not appropriate to disable these local accounts. Clients may be configured to rotate passwords automatically. Stored passwords can be retrieved by desktop support personnel as required, or updated when a password has to be manually changed in the course of system maintenance. By having unique passwords on each machine and logging of password retrievals, security can be improved by making networks more resistant to lateral movement by attackers and enhancing the ability to attribute actions to individual persons in addition to a secure way of storing information through a typical public/private key infrastructure.
+SHIPS is a solution to provide unique and rotated local super user or administrator passwords for environments where it is not possible or not appropriate to disable these local accounts. SHIPS also attempts to address secure sharing of these accounts when they must be controlled by multiple parties. Client systems may be configured to rotate passwords automatically. Stored passwords can be retrieved by desktop support personnel as required, or updated when a password has to be manually changed in the course of system maintenance. By having unique passwords on each machine and logging of password retrievals, security can be improved by making networks more resistant to lateral movement by attackers and enhancing the ability to attribute actions to individual persons.
 
 When performing penetration tests, our common attack vector is through compromising one host and pivoting to other systems with the information obtained. It is common to see large-scale breaches utilizing this method and that is where SHIPS comes into play.
 
 SHIPS is designed to make post-exploitation more difficult and minimize what systems attackers gain access to. Once SHIPS is set up, there isn’t much else that is needed and it’s simple to integrate into existing business processes.
 
-SHIPS works on both Windows and Linux-based systems.
+## ProjectGoals 
 
-# How it works..
+A complete solution packaged as a single application which can be deployed on a variety of platforms.
 
-A script is deployed to the endpoints, servers, and any other systems through group policy or similar deployment tools. The script is run on a determined timeframe from the organization. The script makes a password request to the server, which generates unique password string that it stores and transmits to the client. The client script than applies the new password on the client. TrustedSec recommends deploying SHIPS to servers, workstations, or any other Windows or Linux-based systems. The passwords will now be unique per individual server and workstation.
-For organizations where client and server support roles are segregated to different groups of employees, multiple instances of the SHIPS server can be run on a single host. Simply change the listing port on one of server instances and configure each to authorize the appropriate users. TrustedSec recommends using the alternate listening port for the instance supporting server infrastructure. In most cases accommodating requests on the alternate port from servers will be easier than frequently more mobile clients, with regard to firewalls or proxies.
+Deployments should be simple to move or relocate (this may be required in disaster recovery situations).
 
-When users with permission to access account passwords wish to retrieve them, they simply log into the SHIPS admin server and do a lookup of the machine name. The web application will display the current password associated with the device. SHIPS authorization can be tied to external systems such as LDAP.
+Immediately useable with little or no training for support personnel.
+
+Low resource consumption on server and clients.
+
+Low impact on WANs.
+
+Support a wide variety of clients.
+
+Simple client protocol so various operating systems and devices can be integrated with the server through shell scripts and utilities such as cURL.
+
+Simple to integrate with external directories or asset management tools.
+
+Ability to easily script interaction with the server in order to facilitate system
+deployment processes, or integrate with other support tools.
 
 ### 
 
