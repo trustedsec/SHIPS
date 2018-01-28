@@ -1,4 +1,4 @@
-#Shared Host Integrated Password System
+# Shared Host Integrated Password System
 Copyright 2016 Shared Host Integrated Password System (SHIPS)
 
 Written by: Geoff Walton at TrustedSec
@@ -7,7 +7,7 @@ Company: [TrustedSec](https://www.trustedsec.com)
 
 Please read the design and installation documentation located in the doc/ folder.
 
-#What IS SHIPS?
+# What IS SHIPS?
 
 SHIPS is a solution to provide unique and rotated local super user or administrator passwords for environments where it is not possible or not appropriate to disable these local accounts. SHIPS also attempts to address secure sharing of these accounts when they must be controlled by multiple parties. Client systems may be configured to rotate passwords automatically. Stored passwords can be retrieved by desktop support personnel as required, or updated when a password has to be manually changed in the course of system maintenance. By having unique passwords on each machine and logging of password retrievals, security can be improved by making networks more resistant to lateral movement by attackers and enhancing the ability to attribute actions to individual persons.
 
